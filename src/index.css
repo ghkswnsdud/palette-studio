@@ -1,0 +1,88 @@
+/* 앱 전체에서 쓰는 색상·글꼴 값(디자인 토큰)과 기본 스타일 */
+:root {
+  --bg: #f4f4f6;
+  --panel: #ffffff;
+  --panel-2: #f8f8fa;
+  --border: #e4e4e9;
+  --border-strong: #cfcfd8;
+  --text: #4a4a57;
+  --text-h: #16161d;
+  --text-muted: #8a8a98;
+  --accent: #4d5cfe;
+  --accent-bg: rgba(77, 92, 254, 0.1);
+  --danger: #e5484d;
+  --board-bg: #ececf0;
+  --board-dot: #d2d2da;
+  --shadow-sm: 0 1px 2px rgba(16, 16, 24, 0.06);
+  --shadow: 0 6px 20px rgba(16, 16, 24, 0.12);
+
+  --sans: system-ui, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', Roboto, sans-serif;
+  --mono: ui-monospace, 'SF Mono', Consolas, monospace;
+
+  font: 13px/1.5 var(--sans);
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111114;
+    --panel: #1a1a1f;
+    --panel-2: #222228;
+    --border: #2c2c34;
+    --border-strong: #3c3c46;
+    --text: #b8b8c4;
+    --text-h: #f1f1f5;
+    --text-muted: #7a7a88;
+    --accent: #7c88ff;
+    --accent-bg: rgba(124, 136, 255, 0.16);
+    --danger: #ff6369;
+    --board-bg: #16161a;
+    --board-dot: #2c2c34;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  color: var(--text-h);
+}
+
+p {
+  margin: 0;
+}
+
+code {
+  font-family: var(--mono);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
