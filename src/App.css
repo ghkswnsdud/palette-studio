@@ -38,7 +38,7 @@
 /* 가운데 영역 탭 (무드보드 / 배색 분석) */
 .main-tabs {
   display: flex;
-  gap: 2px;
+  gap: 4px;
   padding: 6px 12px 0;
   background: var(--panel);
   border-bottom: 1px solid var(--border);
@@ -48,15 +48,29 @@
   padding: 8px 14px;
   border: none;
   border-bottom: 2px solid transparent;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   background: none;
   color: var(--text-muted);
   font-weight: 600;
   cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.main-tabs button:hover {
+  color: var(--text-h);
+  background: var(--panel-2);
 }
 
 .main-tabs button.is-active {
   color: var(--text-h);
   border-bottom-color: var(--accent);
+}
+
+/* 중간 폭(작은 노트북)에서는 양쪽 패널을 조금 줄여 가운데 작업 영역을 넓힙니다. */
+@media (max-width: 1280px) {
+  .app-body {
+    grid-template-columns: 252px minmax(0, 1fr) 272px;
+  }
 }
 
 /* 화면이 좁을 때는 세로로 쌓습니다. */
@@ -82,6 +96,12 @@
   .main {
     order: 2;
   }
+  /* 세로로 길어지므로 상단 바(전체 복사 버튼)를 화면 위에 고정합니다. */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
 }
 
 /* ───────────── 상단 바 ───────────── */
@@ -102,6 +122,7 @@
   gap: 10px;
   color: var(--text-h);
   font-size: 14px;
+  letter-spacing: -0.01em;
 }
 
 .topbar-logo {
@@ -140,6 +161,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  color: var(--text);
 }
 
 .sub-title {
@@ -158,56 +180,81 @@
   font-size: 12px;
 }
 
-/* ───────────── 공통: 버튼 ───────────── */
+/* ───────────── 공통: 버튼 ─────────────
+   상태 규칙(모든 버튼 공통): 호버 = 한 단계 밝은 면, 누름 = 살짝 눌림,
+   포커스 = --focus-ring, 비활성 = 흐리게 + 금지 커서 */
 .btn {
   height: 30px;
   padding: 0 12px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--panel-2);
   color: var(--text-h);
+  font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
   box-shadow: var(--shadow-sm);
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.05s;
 }
 
 .btn:hover:not(:disabled) {
-  background: var(--panel-2);
-  border-color: var(--border-strong);
+  background: var(--panel-3);
+  border-color: #50525d;
 }
 
-.btn:disabled {
-  opacity: 0.45;
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled,
+.btn-link:disabled,
+.icon-btn:disabled,
+.segmented button:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .btn-primary {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
   color: #fff;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--accent);
-  filter: brightness(1.08);
+  background: var(--accent-strong-hover);
+  border-color: var(--accent-strong-hover);
 }
 
 .btn-danger {
   color: var(--danger);
 }
 
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+}
+
 .btn-ghost {
+  background: transparent;
+  border-color: var(--border);
   box-shadow: none;
 }
 
 .btn-link {
   border: none;
+  border-radius: 4px;
   background: none;
   padding: 0;
   color: var(--accent);
   cursor: pointer;
   font-size: 12px;
+}
+
+.btn-link:hover:not(:disabled) {
+  color: var(--text-h);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .icon-btn {
@@ -216,20 +263,22 @@
   width: 28px;
   height: 28px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
+  transition: background 0.15s, color 0.15s;
 }
 
-.icon-btn:hover {
-  background: var(--panel-2);
+.icon-btn:hover:not(:disabled) {
+  background: var(--panel-3);
   color: var(--text-h);
 }
 
-:where(button, [role='button'], input):focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
+/* 키보드 포커스: 버튼·입력칸·선택 상자·드롭존 모두 같은 링을 씁니다. */
+:where(button, [role='button'], input, select, textarea, [tabindex]):focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 /* ───────────── 이미지 업로드 ───────────── */
@@ -240,7 +289,7 @@
   min-height: 150px;
   border: 1.5px dashed var(--border-strong);
   border-radius: 10px;
-  background: var(--panel-2);
+  background: var(--input-bg);
   cursor: pointer;
   overflow: hidden;
   transition: border-color 0.15s, background 0.15s;
@@ -252,10 +301,16 @@
   background: var(--accent-bg);
 }
 
-.dropzone.has-image {
+/* 미리보기가 있을 때: 무채색 어두운 바탕 위에 이미지를 그대로 보여 줍니다. */
+.dropzone.has-image,
+.dropzone:has(> .dropzone-preview) {
   border-style: solid;
   border-color: var(--border);
-  background: var(--board-bg);
+  background: var(--preview-bg);
+}
+
+.dropzone:has(> .dropzone-preview):hover {
+  border-color: var(--accent);
 }
 
 .dropzone-empty {
@@ -279,7 +334,7 @@
 .dropzone-preview {
   display: block;
   max-width: 100%;
-  max-height: 200px;
+  max-height: 220px;
   object-fit: contain;
 }
 
@@ -288,9 +343,10 @@
   inset: 0;
   display: grid;
   place-items: center;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(8, 9, 11, 0.62);
   color: #fff;
   font-weight: 600;
+  backdrop-filter: blur(2px);
 }
 
 .file-name {
@@ -332,11 +388,12 @@
 /* ───────────── 팔레트 ───────────── */
 .palette-strip {
   display: flex;
-  height: 36px;
-  border-radius: 8px;
+  height: 40px;
+  border-radius: var(--radius);
   overflow: hidden;
   margin-bottom: 12px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  outline: 1px solid rgba(255, 255, 255, 0.12);
+  outline-offset: -1px;
 }
 
 .palette-strip span {
@@ -356,9 +413,10 @@
   align-items: center;
   gap: 10px;
   padding: 6px;
-  border-radius: 8px;
+  border-radius: var(--radius);
   cursor: pointer;
   border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .swatch-row:hover {
@@ -371,11 +429,11 @@
 }
 
 .swatch-chip {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
-  border-radius: 6px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--chip-ring);
 }
 
 .swatch-info {
@@ -393,12 +451,14 @@
   background: none;
   font-family: var(--mono);
   font-size: 11px;
-  color: var(--text-muted);
+  color: var(--text);
   cursor: copy;
+  transition: background 0.15s, color 0.15s;
 }
 
 .code-copy:first-child {
   font-size: 13px;
+  font-weight: 600;
   color: var(--text-h);
 }
 
@@ -431,7 +491,7 @@
   display: inline-flex;
   padding: 2px;
   border-radius: 7px;
-  background: var(--panel-2);
+  background: var(--input-bg);
   border: 1px solid var(--border);
 }
 
@@ -444,17 +504,19 @@
   color: var(--text);
   font-family: var(--mono);
   cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.segmented button:hover:not(:disabled):not(.is-active) {
+  background: var(--panel-2);
+  color: var(--text-h);
 }
 
 .segmented button.is-active {
-  background: var(--panel);
+  background: var(--panel-3);
   color: var(--text-h);
   font-weight: 600;
-  box-shadow: var(--shadow-sm), 0 0 0 1px var(--border);
-}
-
-.segmented button:disabled {
-  cursor: not-allowed;
+  box-shadow: var(--shadow-sm), 0 0 0 1px var(--border-strong);
 }
 
 .btn-block {
@@ -527,8 +589,13 @@
   gap: 8px;
   padding: 8px;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--panel);
+  border-radius: var(--radius);
+  background: var(--panel-2);
+  transition: border-color 0.15s;
+}
+
+.library-card:hover {
+  border-color: var(--border-strong);
 }
 
 .library-card.is-current {
@@ -538,10 +605,11 @@
 
 .library-strip {
   display: flex;
-  height: 28px;
+  height: 30px;
   border-radius: 5px;
   overflow: hidden;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  outline: 1px solid rgba(255, 255, 255, 0.12);
+  outline-offset: -1px;
 }
 
 .library-strip span {
@@ -578,8 +646,9 @@
 .upload-error {
   margin-top: 8px;
   padding: 8px 10px;
-  border-radius: 6px;
-  background: rgba(229, 72, 77, 0.1);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 122, 127, 0.3);
+  background: var(--danger-bg);
   color: var(--danger);
   font-size: 12px;
 }
@@ -587,13 +656,13 @@
 /* ───────────── 색상 편집 패널 ───────────── */
 .editor-preview {
   position: relative;
-  height: 110px;
+  height: 120px;
   border-radius: 10px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   padding: 12px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--chip-ring);
 }
 
 .editor-preview code {
@@ -640,18 +709,36 @@
 .slider-number {
   height: 30px;
   padding: 0 8px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--panel-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--input-bg);
   color: var(--text-h);
   font-family: var(--mono);
   text-transform: uppercase;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.field input:hover,
+.slider-number:hover {
+  border-color: #50525d;
 }
 
 .field input:focus,
 .slider-number:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.field input:disabled,
+.slider-number:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.field input[aria-invalid='true']:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-bg);
 }
 
 .slider-row {
@@ -680,7 +767,7 @@
   appearance: none;
   height: 10px;
   border-radius: 5px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--chip-ring);
   cursor: pointer;
 }
 
@@ -718,7 +805,7 @@
   height: 28px;
   border-radius: 6px;
   font-weight: 700;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--chip-ring);
 }
 
 .contrast-ratio {
@@ -731,12 +818,12 @@
   border-radius: 4px;
   font-size: 10px;
   font-weight: 600;
-  background: rgba(48, 164, 108, 0.15);
-  color: #30a46c;
+  background: var(--success-bg);
+  color: var(--success);
 }
 
 .badge-fail {
-  background: rgba(229, 72, 77, 0.14);
+  background: var(--danger-bg);
   color: var(--danger);
 }
 
@@ -793,7 +880,7 @@
   background-color: var(--board-bg);
   background-image: radial-gradient(var(--board-dot) 1px, transparent 1px);
   background-size: 20px 20px;
-  box-shadow: inset 0 0 0 1px var(--border);
+  box-shadow: inset 0 0 0 1px var(--border), var(--shadow-sm);
   user-select: none;
 }
 
@@ -814,7 +901,7 @@
   position: absolute;
   border-radius: 8px;
   background: var(--panel);
-  box-shadow: var(--shadow-sm), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm), 0 0 0 1px rgba(255, 255, 255, 0.1);
   cursor: grab;
   touch-action: none;
 }
@@ -914,15 +1001,33 @@
   max-width: 220px;
   padding: 0 8px;
   border: 1px solid var(--border-strong);
-  border-radius: 6px;
-  background: var(--panel);
+  border-radius: var(--radius-sm);
+  background: var(--input-bg);
   color: var(--text-h);
   font-weight: 600;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.project-select:hover:not(:disabled),
+.project-name-input:hover {
+  border-color: #50525d;
+}
+
+.project-select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .project-name-input:focus {
   outline: none;
   border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+/* 선택 상자 목록도 어두운 바탕으로 */
+.workspace-toolbar option {
+  background: var(--panel-2);
+  color: var(--text-h);
 }
 
 .palette-select {
@@ -935,7 +1040,8 @@
   justify-content: space-between;
   gap: 8px;
   padding: 8px 16px;
-  background: rgba(229, 72, 77, 0.1);
+  background: var(--danger-bg);
+  border-bottom: 1px solid rgba(255, 122, 127, 0.3);
   color: var(--danger);
   font-size: 12px;
   white-space: pre-line;
@@ -949,10 +1055,12 @@
   display: inline-block;
   margin: 12px;
   padding: 6px 12px;
-  border-radius: 6px;
-  background: #1c1c22;
-  color: #fff;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--panel-3);
+  color: var(--text-h);
   font-size: 12px;
+  box-shadow: var(--shadow);
 }
 
 .board-image-missing {
@@ -1028,6 +1136,7 @@
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--panel);
+  box-shadow: var(--shadow-sm);
 }
 
 .analysis-card h3 {
@@ -1060,14 +1169,15 @@
   border-radius: 10px;
   font-size: 11px;
   font-weight: 600;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--chip-ring);
 }
 
 .analysis-notice {
   margin-top: 10px;
   padding: 10px 12px;
   border-radius: 8px;
-  background: rgba(255, 196, 0, 0.14);
+  border: 1px solid rgba(255, 196, 0, 0.28);
+  background: var(--warning-bg);
   color: var(--text-h);
   font-size: 12px;
 }
@@ -1100,7 +1210,8 @@
   height: 84px;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  outline: 1px solid rgba(255, 255, 255, 0.12);
+  outline-offset: -1px;
 }
 
 .harmony-swatch {
@@ -1170,7 +1281,7 @@
   width: 18px;
   height: 18px;
   border-radius: 4px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--chip-ring);
 }
 
 .compare-color code {
@@ -1219,7 +1330,7 @@
   height: 22px;
   margin: auto;
   border-radius: 5px;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--chip-ring);
 }
 
 .contrast-matrix td {
@@ -1229,7 +1340,7 @@
   border-radius: 6px;
   text-align: center;
   vertical-align: middle;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--chip-ring);
 }
 
 .contrast-matrix td strong {
@@ -1350,11 +1461,13 @@
   bottom: 24px;
   transform: translate(-50%, 12px);
   padding: 8px 14px;
-  border-radius: 8px;
-  background: #1c1c22;
-  color: #fff;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--panel-3);
+  color: var(--text-h);
   font-size: 12px;
   box-shadow: var(--shadow);
+  z-index: 100;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s, transform 0.2s;

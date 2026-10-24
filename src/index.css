@@ -1,52 +1,62 @@
-/* 앱 전체에서 쓰는 색상·글꼴 값(디자인 토큰)과 기본 스타일 */
+/* 앱 전체에서 쓰는 색상·글꼴 값(디자인 토큰)과 기본 스타일
+   - 사이트 전체를 하나의 다크 테마로 통일합니다. (운영체제 밝은/어두운 설정과 관계없이 동일)
+   - 배경은 무채색 계열로 두어, 이미지와 색상 칩의 실제 색이 왜곡되어 보이지 않게 합니다. */
 :root {
-  --bg: #f4f4f6;
-  --panel: #ffffff;
-  --panel-2: #f8f8fa;
-  --border: #e4e4e9;
-  --border-strong: #cfcfd8;
-  --text: #4a4a57;
-  --text-h: #16161d;
-  --text-muted: #8a8a98;
-  --accent: #4d5cfe;
-  --accent-bg: rgba(77, 92, 254, 0.1);
-  --danger: #e5484d;
-  --board-bg: #ececf0;
-  --board-dot: #d2d2da;
-  --shadow-sm: 0 1px 2px rgba(16, 16, 24, 0.06);
-  --shadow: 0 6px 20px rgba(16, 16, 24, 0.12);
+  /* 바탕 → 패널 → 겹친 면 순서로 조금씩 밝아집니다. */
+  --bg: #0f1013;
+  --panel: #17181c;
+  --panel-2: #1f2025;
+  --panel-3: #2a2b31;
+  --input-bg: #111215;
+  --border: #2b2c33;
+  --border-strong: #3d3f48;
+
+  /* 글자: 어두운 패널 위에서 모두 WCAG AA(4.5:1) 이상 */
+  --text: #c8cad3;
+  --text-h: #f4f5f8;
+  --text-muted: #9a9cab;
+
+  /* 강조색: --accent는 글자·테두리용, --accent-strong은 흰 글자를 올리는 버튼 배경용 */
+  --accent: #929bff;
+  --accent-strong: #4f5bea;
+  --accent-strong-hover: #4350dc;
+  --accent-bg: rgba(146, 155, 255, 0.14);
+  --danger: #ff7a7f;
+  --danger-bg: rgba(255, 122, 127, 0.12);
+  --success: #4fd69a;
+  --success-bg: rgba(79, 214, 154, 0.14);
+  --warning-bg: rgba(255, 196, 0, 0.12);
+
+  /* 이미지 미리보기·무드보드 바탕 (무채색) */
+  --board-bg: #141518;
+  --board-dot: #2c2d34;
+  --preview-bg: #0b0c0e;
+
+  /* 색상 칩 테두리: 바탕과 비슷한 어두운 색 칩도 경계가 보이도록 밝은 선을 얇게 둘러 줍니다. */
+  --chip-ring: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+
+  /* 포커스 링: 키보드로 이동할 때 모든 조작 요소에 같은 모양으로 표시 */
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 12px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
 
   --sans: system-ui, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', Roboto, sans-serif;
   --mono: ui-monospace, 'SF Mono', Consolas, monospace;
 
   font: 13px/1.5 var(--sans);
-  color-scheme: light dark;
+  color-scheme: dark;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #111114;
-    --panel: #1a1a1f;
-    --panel-2: #222228;
-    --border: #2c2c34;
-    --border-strong: #3c3c46;
-    --text: #b8b8c4;
-    --text-h: #f1f1f5;
-    --text-muted: #7a7a88;
-    --accent: #7c88ff;
-    --accent-bg: rgba(124, 136, 255, 0.16);
-    --danger: #ff6369;
-    --board-bg: #16161a;
-    --board-dot: #2c2c34;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
-  }
+  scrollbar-color: var(--border-strong) transparent;
 }
 
 *,
@@ -63,6 +73,7 @@ body,
 
 body {
   margin: 0;
+  background: var(--bg);
 }
 
 h1,
@@ -82,7 +93,13 @@ code {
 
 button,
 input,
+select,
 textarea {
   font: inherit;
   color: inherit;
+}
+
+::selection {
+  background: var(--accent-strong);
+  color: #fff;
 }
